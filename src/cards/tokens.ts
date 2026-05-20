@@ -1,6 +1,10 @@
 /**
  * Design tokens for card rendering. All coordinates are in the card's SVG
  * coordinate system (745 × 1040, ≈ 63×88mm at 300 DPI).
+ *
+ * Frame element positions are calibrated against the m15Frame*.png assets
+ * (2010×2814 source), extracted from the m15Mask*.png alpha bounding boxes
+ * at scale factor 745/2010 ≈ 0.371.
  */
 
 import type { FrameColor } from "@/types/card";
@@ -9,52 +13,53 @@ export const CARD_W = 745;
 export const CARD_H = 1040;
 
 export const BORDER = 24;
-export const CORNER_R = 28;
+export const CORNER_R = 30;
 export const INNER_CORNER_R = 14;
 
-/** Title bar (card name + mana cost). */
-export const TITLE_X = BORDER + 8;
-export const TITLE_Y = BORDER + 12;
-export const TITLE_W = CARD_W - 2 * (BORDER + 8);
-export const TITLE_H = 64;
+/** Title bar (card name + mana cost). Matches m15MaskTitle bbox. */
+export const TITLE_X = 44;
+export const TITLE_Y = 50;
+export const TITLE_W = 657;
+export const TITLE_H = 60;
 
-/** Art window. */
-export const ART_X = BORDER + 8;
-export const ART_Y = TITLE_Y + TITLE_H + 6;
-export const ART_W = CARD_W - 2 * (BORDER + 8);
-export const ART_H = 470;
+/** Art window — sits between title bar and type bar, inset slightly. */
+export const ART_X = 44;
+export const ART_Y = 115;
+export const ART_W = 657;
+export const ART_H = 465;
 
-/** Type line. */
-export const TYPE_X = ART_X;
-export const TYPE_Y = ART_Y + ART_H + 6;
-export const TYPE_W = ART_W;
-export const TYPE_H = 48;
+/** Type line. Matches m15MaskType bbox. */
+export const TYPE_X = 44;
+export const TYPE_Y = 585;
+export const TYPE_W = 657;
+export const TYPE_H = 60;
 
-/** Rules / flavor text box. */
-export const TEXT_X = ART_X;
-export const TEXT_Y = TYPE_Y + TYPE_H + 6;
-export const TEXT_W = ART_W;
-export const TEXT_H = 332;
+/** Rules / flavor text box. Matches m15MaskRules bbox. */
+export const TEXT_X = 55;
+export const TEXT_Y = 650;
+export const TEXT_W = 635;
+export const TEXT_H = 309;
 
-/** Power/Toughness box (bottom-right inset over the text box). */
-export const PT_W = 110;
-export const PT_H = 56;
-export const PT_X = ART_X + ART_W - PT_W - 4;
-export const PT_Y = TEXT_Y + TEXT_H - PT_H + 16;
+/** Power/Toughness badge (m15PT*.png is 377×206 → 140×76 in SVG). */
+export const PT_W = 140;
+export const PT_H = 76;
+export const PT_X = TEXT_X + TEXT_W - PT_W + 26;
+export const PT_Y = TEXT_Y + TEXT_H - PT_H + 18;
 
-/** Loyalty badge (bottom-right of art frame, just inside text box). */
+/** Loyalty badge (planeswalkers). */
 export const LOYALTY_SIZE = 92;
 export const LOYALTY_X = ART_X + ART_W - LOYALTY_SIZE - 8;
 export const LOYALTY_Y = TEXT_Y + TEXT_H - LOYALTY_SIZE / 2 - 4;
 
-/** Collector / artist line at the very bottom. */
-export const COLLECTOR_X = ART_X;
+/** Collector / artist line — sits below the rules box at the bottom of the card. */
+export const COLLECTOR_X = TEXT_X;
 export const COLLECTOR_Y = TEXT_Y + TEXT_H + 6;
 export const COLLECTOR_W = TEXT_W;
 export const COLLECTOR_H = 26;
 
 /**
- * Frame color stops. Each color resolves to:
+ * Frame color stops. Used by fallback/borderless renderers when the m15
+ * frame PNG is not in play.
  *  - top:    band top color
  *  - bottom: band bottom color (slightly darker)
  *  - plate:  color used for title/type/PT panels (darker shade in same family)
@@ -71,6 +76,5 @@ export const FRAME_COLOR_STOPS: Record<FrameColor, { top: string; bottom: string
   land:       { top: "#c2a884", bottom: "#7a553a", plate: "#4d3320", ink: "#180c04" },
 };
 
-/** Color of the text box parchment. */
 export const TEXT_BOX_BG = "#f6efde";
 export const TEXT_INK = "#0b0908";
