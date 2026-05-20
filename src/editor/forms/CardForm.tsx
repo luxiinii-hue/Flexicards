@@ -1,6 +1,7 @@
 import type { Card } from "@/types/card";
+import { ALL_FRAME_STYLES, FRAME_STYLE_LABELS } from "@/types/card";
 import { useStore } from "@/state/store";
-import { Field, Section, TextInput, TextArea, NumberInput, ToggleRow } from "../fields/Field";
+import { Field, Section, TextInput, TextArea, NumberInput, ToggleRow, SelectInput } from "../fields/Field";
 import { ManaCostInput } from "../fields/ManaCostInput";
 import { RulesTextEditor } from "../fields/RulesTextEditor";
 import { RarityInput } from "../fields/RarityInput";
@@ -35,6 +36,13 @@ export function CardForm({ card }: Props): JSX.Element {
         </Field>
         <Field label="Frame color" hint="Auto by default">
           <FrameColorInput value={card.borderColor} onChange={(v) => patch({ borderColor: v })} />
+        </Field>
+        <Field label="Frame style" hint="Visual skin">
+          <SelectInput
+            value={card.frameStyle ?? "standard"}
+            onChange={(v) => patch({ frameStyle: v })}
+            options={ALL_FRAME_STYLES.map((s) => ({ value: s, label: FRAME_STYLE_LABELS[s] }))}
+          />
         </Field>
         <Field label="Rarity">
           <RarityInput value={card.rarity} onChange={(v) => patch({ rarity: v })} />

@@ -46,12 +46,31 @@ class FlexicardsDB extends Dexie {
       scryfallCache: "url, fetchedAt, expiresAt",
       settings: "id",
     });
+
+    // v3: backfill `frameStyle: "standard"` for existing cards so the new
+    // style-aware renderer has a value to switch on.
+    this.version(3)
+      .stores({
+        cards: "id, collectionId, layout, name, frameStyle, createdAt, updatedAt",
+        collections: "id, name, createdAt, updatedAt",
+        blobs: "id, createdAt",
+        scryfallCache: "url, fetchedAt, expiresAt",
+        settings: "id",
+      })
+      .upgrade(async (tx) => {
+        await tx
+          .table("cards")
+          .toCollection()
+          .modify((card: Record<string, unknown>) => {
+            if (!card.frameStyle) card.frameStyle = "standard";
+          });
+      });
   }
 }
 
 export const db = new FlexicardsDB();
 
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 /** Ensure default settings + a default collection exist. Called once on app start. */
 export async function ensureDefaults(): Promise<{ defaultCollectionId: string }> {

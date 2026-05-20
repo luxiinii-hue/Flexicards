@@ -36,6 +36,7 @@ function baseDefaults(init: BaseInit, name: string) {
     artist: "",
     setCode: init.setCode ?? "FLX",
     language: "EN" as const,
+    frameStyle: "standard" as const,
     rulesText: "",
     flavorText: "",
     createdAt: now,

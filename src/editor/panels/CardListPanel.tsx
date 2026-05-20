@@ -220,5 +220,5 @@ export function CardListPanel({ onOpenLayoutPicker, onOpenScryfall }: Props): JS
 
 function swatchFor(card: Card): string {
   const color = resolveFrameColor(card);
-  return FRAME_COLOR_STOPS[color].mid;
+  return FRAME_COLOR_STOPS[color].plate;
 }

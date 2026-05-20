@@ -1,17 +1,18 @@
 /**
  * First-launch onboarding controller. Drives two steps:
  *   1. TypePicker — pick a Magic card type (with random Scryfall examples)
- *   2. VariantPicker — pick a specific layout variant for that type
- * After step 2, creates a blank card with the chosen layout and the user
- * enters the regular editor.
+ *   2. FrameStylePicker — pick a visual frame style
+ * After step 2, creates a blank card with the chosen type's layout + the
+ * chosen frame style and the user enters the regular editor.
  */
 import { useState } from "react";
 import { useStore } from "@/state/store";
 import { createCard } from "@/state/factories";
 import { db } from "@/state/db";
 import { TypePicker } from "./TypePicker";
-import { VariantPicker } from "./VariantPicker";
-import { type CardType, type TypeVariant } from "./types";
+import { FrameStylePicker } from "./FrameStylePicker";
+import { type CardType } from "./types";
+import type { Card, FrameStyle } from "@/types/card";
 import { pushToast } from "../toastBus";
 
 interface Props {
@@ -19,20 +20,19 @@ interface Props {
 }
 
 export function Onboarding({ onComplete }: Props): JSX.Element {
-  const [step, setStep] = useState<"type" | "variant">("type");
+  const [step, setStep] = useState<"type" | "style">("type");
   const [chosenType, setChosenType] = useState<CardType | null>(null);
   const activeCollectionId = useStore((s) => s.activeCollectionId);
   const setActiveCard = useStore((s) => s.setActiveCard);
 
-  async function commitVariant(variant: TypeVariant) {
+  async function commit(type: CardType, frameStyle: FrameStyle) {
     if (!activeCollectionId) {
       onComplete();
       return;
     }
-    // Build a blank card with the chosen layout and apply variant defaults
-    const card = createCard(variant.layout, { collectionId: activeCollectionId });
-    if (variant.defaultTypeLine) card.typeLine = variant.defaultTypeLine;
-    if (variant.defaultRarity) card.rarity = variant.defaultRarity;
+    const card = createCard(type.layout, { collectionId: activeCollectionId });
+    if (type.defaultTypeLine) card.typeLine = type.defaultTypeLine;
+    (card as Card).frameStyle = frameStyle;
 
     await db.transaction("rw", db.cards, db.collections, async () => {
       await db.cards.put(card);
@@ -45,14 +45,13 @@ export function Onboarding({ onComplete }: Props): JSX.Element {
       }
     });
 
-    // Refresh store
     const [cards, collections] = await Promise.all([
       db.cards.orderBy("updatedAt").reverse().toArray(),
       db.collections.orderBy("createdAt").toArray(),
     ]);
     useStore.setState({ cards, collections });
     setActiveCard(card.id);
-    pushToast(`Forged a ${variant.label}`, "success");
+    pushToast(`Forged a ${type.label} in ${frameStyle} frame`, "success");
     onComplete();
   }
 
@@ -60,13 +59,8 @@ export function Onboarding({ onComplete }: Props): JSX.Element {
     return (
       <TypePicker
         onPick={(type) => {
-          if (type.variants.length === 1) {
-            // Single variant — skip step 2 entirely
-            void commitVariant(type.variants[0]!);
-          } else {
-            setChosenType(type);
-            setStep("variant");
-          }
+          setChosenType(type);
+          setStep("style");
         }}
         onSkip={onComplete}
       />
@@ -74,9 +68,9 @@ export function Onboarding({ onComplete }: Props): JSX.Element {
   }
 
   return (
-    <VariantPicker
+    <FrameStylePicker
       type={chosenType!}
-      onPick={commitVariant}
+      onPick={(style) => void commit(chosenType!, style)}
       onBack={() => {
         setChosenType(null);
         setStep("type");

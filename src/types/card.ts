@@ -18,6 +18,35 @@ export type FrameColor =
   | "colorless"
   | "land";
 
+/**
+ * Frame style — the visual "skin" applied to the card frame. Independent
+ * from the card's layout (which determines structure: creature/saga/etc.)
+ * and from the frame color (which sets the palette). The style governs
+ * border thickness, panel treatments, ornamental flourishes, and overlay
+ * effects.
+ */
+export type FrameStyle =
+  | "standard"   // clean color band, dark borders, parchment text
+  | "borderless" // art fills the card, translucent overlays for text
+  | "retro"      // thicker rounded outer border, parchment-heavy
+  | "showcase";  // standard + ornamental corner flourishes + gold inner rim
+
+export const ALL_FRAME_STYLES: FrameStyle[] = ["standard", "borderless", "retro", "showcase"];
+
+export const FRAME_STYLE_LABELS: Record<FrameStyle, string> = {
+  standard:   "Standard",
+  borderless: "Borderless",
+  retro:      "Retro",
+  showcase:   "Showcase",
+};
+
+export const FRAME_STYLE_DESCRIPTIONS: Record<FrameStyle, string> = {
+  standard:   "Clean color band, dark borders, parchment text box. The reliable default.",
+  borderless: "Art fills the entire card. Name, type, and rules sit on translucent dark strips.",
+  retro:      "Thicker rounded outer border. Parchment-heavy text panel. Vintage feel.",
+  showcase:   "Standard frame with decorative corner flourishes and a gold inner rim. Premium look.",
+};
+
 export interface ArtImageRef {
   blobId: string; // key into the IndexedDB blobs table
   /** Crop transform persisted so the user can re-edit the framing later. */
@@ -51,6 +80,8 @@ export interface CardBase {
   language: Language;
   /** If null/undefined, color is derived from manaCost. */
   borderColor?: FrameColor;
+  /** Visual skin for the frame. Defaults to "standard" on legacy cards. */
+  frameStyle?: FrameStyle;
   artImage?: ArtImageRef;
   rulesText: string;
   flavorText?: string;
