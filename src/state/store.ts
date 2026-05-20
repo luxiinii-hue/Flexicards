@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { useShallow } from "zustand/shallow";
 import type { Card, CardLayout, Collection, Settings } from "@/types/card";
 import { db, ensureDefaults, SCHEMA_VERSION } from "./db";
 import { createCard } from "./factories";
@@ -322,12 +323,18 @@ export function useActiveCollection(): Collection | null {
 }
 
 export function useCardsInActiveCollection(): Card[] {
-  return useStore((s) => {
-    const col = s.collections.find((c) => c.id === s.activeCollectionId);
-    if (!col) return [];
-    const byId = new Map(s.cards.map((c) => [c.id, c]));
-    return col.cards
-      .map((id) => byId.get(id))
-      .filter((c): c is Card => Boolean(c));
-  });
+  // The selector builds a new array on every call. Without useShallow, Zustand v5
+  // (default Object.is equality) would treat each new array as a state change and
+  // re-render in an infinite loop. useShallow does element-by-element comparison
+  // so the hook only triggers a re-render when the actual contents change.
+  return useStore(
+    useShallow((s) => {
+      const col = s.collections.find((c) => c.id === s.activeCollectionId);
+      if (!col) return [] as Card[];
+      const byId = new Map(s.cards.map((c) => [c.id, c]));
+      return col.cards
+        .map((id) => byId.get(id))
+        .filter((c): c is Card => Boolean(c));
+    })
+  );
 }
