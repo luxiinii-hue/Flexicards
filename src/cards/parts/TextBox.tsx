@@ -2,7 +2,7 @@
  * Rules + flavor text panel. Clean off-white parchment with a single thin
  * dark border. Inline mana symbols use the mana-font CSS class names.
  */
-import { TEXT_BOX_BG, TEXT_H, TEXT_INK, TEXT_W, TEXT_X, TEXT_Y } from "../tokens";
+import { TEXT_H, TEXT_INK, TEXT_W, TEXT_X, TEXT_Y } from "../tokens";
 import { parseManaCost, type ManaToken } from "../manaCost";
 
 interface TextBoxProps {
@@ -30,21 +30,6 @@ export function TextBox({
 
   return (
     <g>
-      {/* Clean parchment fill */}
-      <rect x={boxX} y={boxY} width={boxW} height={boxH} rx={4} ry={4} fill={TEXT_BOX_BG} />
-      {/* Single thin dark border */}
-      <rect
-        x={boxX}
-        y={boxY}
-        width={boxW}
-        height={boxH}
-        rx={4}
-        ry={4}
-        fill="none"
-        stroke="rgba(0,0,0,0.65)"
-        strokeWidth={1.2}
-      />
-
       <foreignObject
         x={boxX + PADDING_X}
         y={boxY + PADDING_Y}
@@ -53,7 +38,7 @@ export function TextBox({
       >
         <div
           style={{
-            fontFamily: "'Source Serif 4', Georgia, serif",
+            fontFamily: "'MPlantin', 'Source Serif 4', Georgia, serif",
             fontSize: "23px",
             lineHeight: 1.18,
             color: TEXT_INK,

@@ -13,13 +13,10 @@ body,
 }
 
 body {
-  font-family: "IM Fell DW Pica", "IM Fell English", Georgia, serif;
-  font-feature-settings: "ss01", "ss02";
-  color: #efe1c2;
-  background:
-    radial-gradient(1200px 700px at 80% -10%, rgba(217, 178, 102, 0.06), transparent 60%),
-    radial-gradient(900px 600px at -10% 120%, rgba(92, 174, 155, 0.05), transparent 60%),
-    linear-gradient(180deg, #160e07 0%, #0c0805 100%);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  color: #e5e7eb;
+  background-color: #0f1115;
+  background-image: radial-gradient(circle at 50% 0%, #1f232b 0%, #0f1115 60%);
   background-attachment: fixed;
 }
 
@@ -31,12 +28,11 @@ body {
 
 /* Better focus rings for keyboard nav */
 :focus-visible {
-  outline: 2px solid #d9b266;
+  outline: 2px solid #ea580c;
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-/* Reduce motion preference respected */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
@@ -45,294 +41,239 @@ body {
   }
 }
 
-/* SVG card preview should never select text inadvertently */
 svg.card-svg text {
   user-select: none;
 }
 
-/* ─── Workshop component layer ─────────────────────────────────────────── */
+/* ─── MTG Grimoire Component Layer ─────────────────────────────────────────── */
 @layer components {
-  /** Brass plate background (header, primary buttons, nameplate dots). */
+  /* Replaces ws-brass */
   .ws-brass {
-    @apply bg-brass-plate text-ink-900;
-    border: 1px solid #3a2811;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 231, 170, 0.6),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.45),
-      0 1px 0 rgba(0, 0, 0, 0.4),
-      0 0 0 1px rgba(0, 0, 0, 0.25);
+    @apply bg-neutral-900 text-neutral-100;
+    border-bottom: 1px solid #262626;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   }
 
+  /* Replaces ws-brass-dim */
   .ws-brass-dim {
-    @apply bg-brass-dim text-ink-50;
-    border: 1px solid #2a1e0c;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 210, 140, 0.18),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+    @apply bg-neutral-900 text-neutral-300;
   }
 
-  /** Walnut panel chassis. Used for sidebars, the form panel, modals. */
+  /* Replaces ws-panel */
   .ws-panel {
-    @apply bg-walnut text-ink-100;
-    border: 1px solid #2a1c0c;
-    box-shadow:
-      inset 0 0 0 1px rgba(217, 178, 102, 0.06),
-      inset 0 1px 0 rgba(255, 220, 160, 0.05),
-      0 8px 24px rgba(0, 0, 0, 0.55);
+    @apply bg-neutral-900 text-neutral-200;
+    border-right: 1px solid #262626;
   }
 
-  /** Engraved (dark, recessed) text — used on brass. */
-  .ws-etched {
-    color: #2a1d0c;
-    text-shadow:
-      0 1px 0 rgba(255, 235, 180, 0.45),
-      0 -1px 0 rgba(0, 0, 0, 0.35);
+  /* Replaces ws-etched and ws-engraved with standard text styles */
+  .ws-etched, .ws-engraved {
+    color: #e5e7eb;
+    text-shadow: none;
   }
 
-  /** Engraved (light, recessed) text — used on dark walnut. */
-  .ws-engraved {
-    color: #f3d99a;
-    text-shadow:
-      0 1px 0 rgba(0, 0, 0, 0.85),
-      0 -1px 0 rgba(255, 220, 160, 0.18),
-      0 0 18px rgba(217, 178, 102, 0.18);
-  }
-
-  /** Tiny rivet that goes on plate corners and dividers. */
+  /* Empty out rivet since we don't use it anymore */
   .ws-rivet {
-    width: 9px;
-    height: 9px;
-    border-radius: 999px;
-    background: radial-gradient(circle at 35% 30%, #f1d999, #7a5621 55%, #2a1c0a 100%);
-    box-shadow:
-      inset 0 0 0 1px rgba(0, 0, 0, 0.5),
-      0 1px 0 rgba(255, 220, 160, 0.15);
-    display: inline-block;
+    display: none;
   }
 
-  /** Nameplate: small section header above a content block. */
+  /* Nameplate: small section header */
   .ws-nameplate {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 7px 12px;
-    background: linear-gradient(180deg, #2a1c0c, #1a1208);
-    border-top: 1px solid #6a4a1c;
-    border-bottom: 1px solid #110b04;
-    color: #d9b266;
-    font-family: "Cinzel", serif;
-    letter-spacing: 0.16em;
+    gap: 8px;
+    padding: 6px 10px;
+    background: #171717;
+    border-left: 2px solid #ea580c;
+    color: #ea580c;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     font-size: 11px;
-  }
-  .ws-nameplate-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 999px;
-    background: radial-gradient(circle, #ffb56a, #5c2a0a);
-    box-shadow: 0 0 8px rgba(255, 140, 70, 0.6);
+    font-weight: 600;
   }
 
-  /** Input field — parchment-toned background, brass frame. */
+  .ws-nameplate-dot {
+    display: none;
+  }
+
+  /* Input field */
   .ws-input {
     width: 100%;
-    background: linear-gradient(180deg, #2a1d0c, #1a1208);
-    color: #f0e0bf;
-    border: 1px solid #3e2a14;
-    box-shadow:
-      inset 0 1px 0 rgba(0, 0, 0, 0.6),
-      inset 0 0 0 1px rgba(217, 178, 102, 0.05);
+    background: #171717;
+    color: #f3f4f6;
+    border: 1px solid #404040;
     padding: 8px 10px;
-    font-family: "IM Fell DW Pica", Georgia, serif;
+    font-family: ui-sans-serif, system-ui, sans-serif;
     font-size: 14px;
-    border-radius: 2px;
+    border-radius: 4px;
     outline: none;
+    transition: border-color 0.15s;
   }
   .ws-input:focus {
-    border-color: #b0863e;
-    box-shadow:
-      inset 0 1px 0 rgba(0, 0, 0, 0.6),
-      0 0 0 1px rgba(217, 178, 102, 0.35),
-      0 0 12px rgba(217, 178, 102, 0.18);
+    border-color: #ea580c;
   }
   textarea.ws-input {
     resize: vertical;
     min-height: 60px;
   }
 
-  /** Field label — small caps mono. */
+  /* Field label */
   .ws-label {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 9.5px;
-    letter-spacing: 0.22em;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #b08a4a;
+    color: #a3a3a3;
   }
 
-  /** Brass button — primary actions. */
+  /* Button — primary actions */
   .ws-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     padding: 7px 12px;
-    font-family: "Cinzel", serif;
+    font-family: ui-sans-serif, system-ui, sans-serif;
     font-weight: 600;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     font-size: 11px;
     cursor: pointer;
-    border-radius: 2px;
-    transition: filter 0.15s;
+    border-radius: 4px;
+    transition: all 0.15s;
   }
-  .ws-btn:hover:not(:disabled) {
-    filter: brightness(1.08);
+  .ws-btn-primary {
+    background: #ea580c;
+    color: #ffffff;
+    border: 1px solid #c2410c;
+  }
+  .ws-btn-primary:hover:not(:disabled) {
+    background: #f97316;
+  }
+  .ws-btn-secondary {
+    background: #262626;
+    color: #d4d4d4;
+    border: 1px solid #404040;
+  }
+  .ws-btn-secondary:hover:not(:disabled) {
+    background: #404040;
+    color: #ffffff;
   }
   .ws-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-  .ws-btn-primary {
-    background: linear-gradient(180deg, #e6c47a 0%, #c89a4d 30%, #8d6627 65%, #5c3f15 100%);
-    color: #1a1208;
-    border: 1px solid #3a2811;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 231, 170, 0.6),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.45),
-      0 1px 0 rgba(0, 0, 0, 0.4);
-    text-shadow: 0 1px 0 rgba(255, 235, 180, 0.45);
-  }
-  .ws-btn-secondary {
-    background: linear-gradient(180deg, #2a1d0c, #1a1208);
-    color: #f3d99a;
-    border: 1px solid #110b04;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 220, 160, 0.1),
-      0 1px 0 rgba(0, 0, 0, 0.4);
-  }
-  .ws-btn-danger {
-    background: linear-gradient(180deg, #5a1f0c 0%, #3a1208 100%);
-    color: #ffd0a0;
-    border: 1px solid #2a0c04;
-  }
 
-  /** Chip — small status / value tag. */
+  /* Chip */
   .ws-chip {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     padding: 3px 8px;
-    border: 1px solid #3a2811;
-    background: linear-gradient(180deg, #2a1d0c, #14100a);
-    color: #d9b266;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 9.5px;
-    letter-spacing: 0.16em;
+    border: 1px solid #404040;
+    background: #171717;
+    color: #a3a3a3;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    border-radius: 2px;
+    border-radius: 4px;
   }
   .ws-chip-led {
     width: 6px;
     height: 6px;
     border-radius: 999px;
-    box-shadow: 0 0 6px currentColor;
   }
 
-  /** Specimen row in the card list. */
-  .ws-specimen {
+  /* Specimen row */
+  .ws-card {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 9px 10px;
-    background: linear-gradient(180deg, #1a1208, #110b05);
-    border: 1px solid #2a1c0c;
-    border-left: 3px solid #3a2811;
+    padding: 8px 10px;
+    background: #171717;
+    border: 1px solid #262626;
+    border-left: 3px solid #404040;
     cursor: pointer;
     position: relative;
-    border-radius: 2px;
+    border-radius: 4px;
+    transition: border-color 0.1s;
   }
-  .ws-specimen:hover {
-    background: linear-gradient(180deg, #221610, #16100a);
+  .ws-card:hover {
+    background: #262626;
   }
-  .ws-specimen.is-active {
-    border-left-color: #d9b266;
-    background: linear-gradient(180deg, #2a1d0c, #1a1208);
-    box-shadow:
-      inset 0 0 0 1px rgba(217, 178, 102, 0.18),
-      0 0 18px rgba(217, 178, 102, 0.08);
+  .ws-card.is-active {
+    border-left-color: #ea580c;
+    background: #1f1f1f;
   }
-  .ws-specimen-swatch {
+  .ws-card-swatch {
     width: 8px;
     height: 36px;
-    border-radius: 1px;
-    box-shadow:
-      inset 0 0 0 1px rgba(0, 0, 0, 0.5),
-      0 0 8px currentColor;
+    border-radius: 2px;
   }
 
-  /** Capsule — small segmented control. */
+  /* Capsule */
   .ws-capsule {
     display: inline-flex;
     align-items: stretch;
-    border: 1px solid #2a1c0c;
-    border-radius: 3px;
+    border: 1px solid #404040;
+    border-radius: 4px;
     overflow: hidden;
-    background: #120c06;
-    box-shadow: inset 0 1px 0 rgba(255, 220, 160, 0.08);
+    background: #171717;
   }
   .ws-capsule > button {
     padding: 6px 10px;
     background: transparent;
-    color: #a48857;
-    font-family: "JetBrains Mono", monospace;
+    color: #a3a3a3;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
     font-size: 10px;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     border: 0;
     cursor: pointer;
+    border-right: 1px solid #404040;
+  }
+  .ws-capsule > button:last-child {
+    border-right: none;
   }
   .ws-capsule > button:hover {
-    color: #d9b266;
+    color: #ffffff;
+    background: #262626;
   }
   .ws-capsule > button.is-on {
-    background: linear-gradient(180deg, #d9b266, #8d6627);
-    color: #1a1208;
-    text-shadow: 0 1px 0 rgba(255, 235, 180, 0.4);
+    background: #ea580c;
+    color: #ffffff;
   }
 
-  /** Pipe ornament — horizontal divider in a panel. */
   .ws-pipe {
-    height: 8px;
-    background: linear-gradient(180deg, #6a4a1c, #2a1c0c 60%, #110b04);
-    border-top: 1px solid #8a6428;
-    border-bottom: 1px solid #0a0703;
+    height: 1px;
+    background: #262626;
+    border: none;
+    margin: 8px 0;
   }
 
-  /** Rivet-divider used between cabinet sections. */
   .ws-rivet-divider {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 6px 14px;
-    background: linear-gradient(180deg, #1d130a, #14100a);
-    border-top: 1px solid #3a2811;
-    border-bottom: 1px solid #110b05;
+    background: #171717;
+    border-top: 1px solid #262626;
+    border-bottom: 1px solid #262626;
   }
 }
 
-/* Scrollbar styled for the workshop aesthetic */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #110b05;
+  background: #0f1115;
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #6a4a1c, #2a1c0c);
-  border: 1px solid #110b05;
-  border-radius: 2px;
+  background: #404040;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #8a6428, #3a2811);
+  background: #737373;
 }

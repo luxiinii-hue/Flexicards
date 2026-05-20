@@ -109,7 +109,7 @@ function Header({ onOpenLayoutPicker, onOpenScryfall, onOpenPrintQueue, onOpenSe
 
       <div className="h-7 w-px bg-brass-700" />
       <span className="font-mono ws-etched hidden md:inline" style={{ fontSize: 10, letterSpacing: "0.18em" }}>
-        ESTAB. MMXXVI · CABINET 07
+        CUSTOM PROXY GENERATOR
       </span>
 
       <div className="flex-1" />
@@ -117,7 +117,7 @@ function Header({ onOpenLayoutPicker, onOpenScryfall, onOpenPrintQueue, onOpenSe
       <div className="flex items-center gap-2">
         <button type="button" onClick={onOpenLayoutPicker} className="ws-btn ws-btn-secondary" title="New card (Ctrl+N)">
           <span style={{ width: 8, height: 8, borderRadius: 1, background: "#ff7a3a", boxShadow: "0 0 8px #ff7a3a", display: "inline-block" }} />
-          Forge Card
+          New Card
         </button>
         <button type="button" onClick={onOpenScryfall} className="ws-btn ws-btn-secondary">
           Scryfall Intake
@@ -194,3 +194,6 @@ function StatusBar(): JSX.Element {
     </footer>
   );
 }
+
+
+

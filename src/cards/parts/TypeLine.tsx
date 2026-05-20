@@ -1,8 +1,4 @@
-/**
- * Type line panel — same flat-panel treatment as the title bar. Type text on
- * the left, rarity-tinted set-symbol lozenge on the right.
- */
-import { FRAME_COLOR_STOPS, TYPE_H, TYPE_W, TYPE_X, TYPE_Y } from "../tokens";
+import { TYPE_H, TYPE_W, TYPE_X, TYPE_Y } from "../tokens";
 import type { FrameColor, Rarity } from "@/types/card";
 
 interface TypeLineProps {
@@ -29,37 +25,15 @@ const RARITY_STROKE: Record<Rarity, string> = {
 };
 
 export function TypeLine({ text, color, rarity }: TypeLineProps): JSX.Element {
-  const stops = FRAME_COLOR_STOPS[color];
   const isDark = color === "black" || color === "blue";
-  const ink = isDark ? "#f3e7c8" : "#1a1206";
+  const ink = isDark ? "#ffffff" : "#000000";
 
   return (
     <g>
-      <rect
-        x={TYPE_X}
-        y={TYPE_Y}
-        width={TYPE_W}
-        height={TYPE_H}
-        rx={4}
-        ry={4}
-        fill={stops.plate}
-      />
-      <rect
-        x={TYPE_X}
-        y={TYPE_Y}
-        width={TYPE_W}
-        height={TYPE_H}
-        rx={4}
-        ry={4}
-        fill="none"
-        stroke="rgba(0,0,0,0.65)"
-        strokeWidth={1.2}
-      />
-
       <foreignObject x={TYPE_X + 14} y={TYPE_Y + 2} width={TYPE_W - 56} height={TYPE_H - 4}>
         <div
           style={{
-            fontFamily: "'Cinzel', Georgia, serif",
+            fontFamily: "'Beleren', 'Cinzel', Georgia, serif",
             fontWeight: 600,
             fontSize: "22px",
             color: ink,
@@ -70,6 +44,7 @@ export function TypeLine({ text, color, rarity }: TypeLineProps): JSX.Element {
             height: "100%",
             display: "flex",
             alignItems: "center",
+            textShadow: isDark ? "1px 1px 2px rgba(0,0,0,0.8)" : "none",
           }}
         >
           {text || "Type"}

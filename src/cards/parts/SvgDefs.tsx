@@ -1,9 +1,14 @@
+import { CARD_H, CARD_W, CORNER_R } from "../tokens";
+
 /**
  * Shared SVG <defs> — filters, patterns used across the card rendering tree.
  */
 export function CardSvgDefs(): JSX.Element {
   return (
     <defs>
+      <clipPath id="card-corners">
+        <rect x="0" y="0" width={CARD_W} height={CARD_H} rx={CORNER_R} ry={CORNER_R} />
+      </clipPath>
       <filter id="card-shadow" x="-10%" y="-10%" width="120%" height="120%">
         <feGaussianBlur stdDeviation="4" />
       </filter>

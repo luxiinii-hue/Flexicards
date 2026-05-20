@@ -5,54 +5,48 @@ export default {
   theme: {
     extend: {
       colors: {
-        /**
-         * Walnut ink (the editor background). Inverted from the previous
-         * cream palette: small numbers are darkest, large numbers brightest.
-         */
+        /* Sleek dark neutral palette */
         ink: {
-          900: "#0c0805",
-          800: "#100b07",
-          700: "#171009",
-          600: "#22180d",
-          500: "#2e2010",
-          400: "#3e2c17",
-          300: "#604322",
-          200: "#8e6932",
-          100: "#cfb98a",
-          50:  "#f3e6c0",
+          900: "#171717",
+          800: "#262626",
+          700: "#404040",
+          600: "#525252",
+          500: "#737373",
+          400: "#a3a3a3",
+          300: "#d4d4d4",
+          200: "#e5e7eb",
+          100: "#f3f4f6",
+          50:  "#fafafa",
         },
-        /** Brass alloy used on plates, rivets and primary buttons. */
+        /* Mythic Orange palette replacing brass */
         brass: {
-          50:  "#fff3c8",
-          100: "#f3d99a",
-          200: "#e6c47a",
-          300: "#d9b266",
-          400: "#b0863e",
-          500: "#8d6627",
-          600: "#5e421a",
-          700: "#3a2811",
-          800: "#221608",
-          900: "#110b04",
+          50:  "#fffedd",
+          100: "#ffedb3",
+          200: "#ffd27a",
+          300: "#ffb443",
+          400: "#ff9114",
+          500: "#ea580c",
+          600: "#c2410c",
+          700: "#9a3412",
+          800: "#7c2d12",
+          900: "#431407",
         },
-        /** Patinated teal accent for chips, alerts and verdant flourishes. */
         patina: {
-          400: "#8edec5",
-          500: "#5cae9b",
-          600: "#3d8676",
+          400: "#6ee7b7",
+          500: "#34d399",
+          600: "#10b981",
         },
-        /** Ember accent for warnings, "press ready" cues. */
         ember: {
-          400: "#ffb56a",
-          500: "#ff7a3a",
-          600: "#c2693a",
-          700: "#7a3a14",
+          400: "#fb923c",
+          500: "#f97316",
+          600: "#ea580c",
+          700: "#c2410c",
         },
-        /** Parchment colors used on rules text fields and the text box. */
         parchment: {
-          50:  "#fff8e2",
-          100: "#f3e7bf",
-          200: "#dec99a",
-          300: "#b09866",
+          50:  "#fdfbf7",
+          100: "#f7f1e5",
+          200: "#ebe0ca",
+          300: "#d6c7a6",
         },
         mtg: {
           white: "#f8f6d8",
@@ -67,36 +61,30 @@ export default {
       },
       fontFamily: {
         ui: ['"Inter"', "system-ui", "sans-serif"],
-        title: ['"Cinzel"', '"Trajan Pro"', "Georgia", "serif"],
-        body: ['"Source Serif 4"', "Georgia", "serif"],
-        stats: ['"Source Sans 3"', "system-ui", "sans-serif"],
-        fell: ['"IM Fell DW Pica"', '"IM Fell English"', "Georgia", "serif"],
-        fellEng: ['"IM Fell English"', "Georgia", "serif"],
+        title: ['"Beleren"', '"Cinzel"', '"Trajan Pro"', "Georgia", "serif"],
+        body: ['"MPlantin"', '"Source Serif 4"', "Georgia", "serif"],
+        stats: ['"Beleren"', '"Source Sans 3"', "system-ui", "sans-serif"],
+        fell: ['"MPlantin"', '"IM Fell DW Pica"', "Georgia", "serif"],
+        fellEng: ['"MPlantin"', '"IM Fell English"', "Georgia", "serif"],
         mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
       },
       letterSpacing: {
         wider: "0.06em",
         widest: "0.16em",
-        engraved: "0.32em",
+        engraved: "0.1em",
       },
       boxShadow: {
-        card: "0 2px 6px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.04)",
-        deep: "0 16px 40px -10px rgba(0,0,0,0.7)",
-        brass:
-          "inset 0 1px 0 rgba(255,231,170,0.6), inset 0 -1px 0 rgba(0,0,0,0.45), 0 1px 0 rgba(0,0,0,0.4), 0 0 0 1px rgba(0,0,0,0.25)",
-        plate:
-          "inset 0 0 0 1px rgba(217,178,102,0.06), inset 0 1px 0 rgba(255,220,160,0.05), 0 8px 24px rgba(0,0,0,0.55)",
-        engraved: "0 1px 0 rgba(0,0,0,0.9), 0 -1px 0 rgba(255,220,160,0.18)",
+        card: "0 4px 12px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05)",
+        deep: "0 16px 40px -10px rgba(0,0,0,0.8)",
+        brass: "0 1px 2px rgba(0,0,0,0.5)",
+        plate: "0 4px 12px rgba(0,0,0,0.5)",
+        engraved: "none",
       },
       backgroundImage: {
-        "brass-plate":
-          "linear-gradient(180deg, #e6c47a 0%, #c89a4d 30%, #8d6627 65%, #5c3f15 100%)",
-        "brass-dim":
-          "linear-gradient(180deg, #8a6a36 0%, #5e421a 60%, #3a2811 100%)",
-        "walnut":
-          "linear-gradient(180deg, #1d130a, #14100a 60%, #0e0a05)",
-        "walnut-dim":
-          "linear-gradient(180deg, #160e07 0%, #0c0805 100%)",
+        "brass-plate": "linear-gradient(180deg, #333333 0%, #1a1a1a 100%)",
+        "brass-dim": "linear-gradient(180deg, #262626 0%, #171717 100%)",
+        "walnut": "linear-gradient(180deg, #171717, #0a0a0a)",
+        "walnut-dim": "linear-gradient(180deg, #0a0a0a, #000000)",
       },
     },
   },

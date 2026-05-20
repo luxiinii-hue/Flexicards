@@ -6,8 +6,7 @@
  */
 import type { Card, CreatureCard, NormalCard, FrameColor, FrameStyle } from "@/types/card";
 import { CardSvgDefs } from "../parts/SvgDefs";
-import { Border } from "../parts/Border";
-import { InnerFrame } from "../parts/InnerFrame";
+import { FrameOverlay } from "../parts/FrameOverlay";
 import { TitleBar } from "../parts/TitleBar";
 import { ArtBox } from "../parts/ArtBox";
 import { TypeLine } from "../parts/TypeLine";
@@ -17,7 +16,6 @@ import { CollectorLine } from "../parts/CollectorLine";
 import { Holostamp } from "../parts/Holostamp";
 import { ShowcaseOrnaments } from "../parts/ShowcaseOrnaments";
 import { NormalFrameBorderless } from "./NormalFrameBorderless";
-import { RetroOuterBorder } from "../parts/RetroOuterBorder";
 import { resolveFrameColor } from "../frameColor";
 import { useArtHref } from "../useArtHref";
 
@@ -57,10 +55,14 @@ function NormalFrameStandardish({
   return (
     <g>
       <CardSvgDefs />
-      {style === "retro" ? <RetroOuterBorder color={color} /> : <Border />}
-      <InnerFrame color={color} gradientId={`inner-${card.id}`} />
-      <TitleBar name={card.name} manaCost={card.manaCost} color={color} />
+      {/* Art is drawn behind the frame (frame PNGs usually have a transparent window) */}
       <ArtBox imageHref={artHref} color={color} clipId={`art-${card.id}`} />
+      
+      {/* The high-res MTG frame PNG */}
+      <FrameOverlay color={color} layout={card.layout} style={style} />
+      
+      {/* Text overlays (background rects removed) */}
+      <TitleBar name={card.name} manaCost={card.manaCost} color={color} />
       <TypeLine text={card.typeLine} color={color} rarity={card.rarity} setSymbolId={card.setSymbol?.id} />
       <TextBox rulesText={card.rulesText} flavorText={card.flavorText} rightInset={showPT ? 100 : 0} />
       <Holostamp rarity={card.rarity} />

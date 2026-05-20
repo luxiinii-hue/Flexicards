@@ -208,7 +208,7 @@ export function CardListPanel({ onOpenLayoutPicker, onOpenScryfall }: Props): JS
 
       <div className="border-t border-brass-700 bg-walnut-dim p-3" style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <button type="button" onClick={onOpenLayoutPicker} className="ws-btn ws-btn-primary">
-          + Forge New Card
+          + New Card
         </button>
         <button type="button" onClick={onOpenScryfall} className="ws-btn ws-btn-secondary">
           Scryfall Intake
