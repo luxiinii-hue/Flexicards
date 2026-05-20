@@ -5,30 +5,46 @@ interface Props {
   onChange: (v: Rarity) => void;
 }
 
-const RARITIES: { value: Rarity; label: string; color: string }[] = [
-  { value: "common",   label: "Common",   color: "#1c1a18" },
-  { value: "uncommon", label: "Uncommon", color: "#9aa6ad" },
-  { value: "rare",     label: "Rare",     color: "#e1c97c" },
-  { value: "mythic",   label: "Mythic",   color: "#c95b1e" },
-  { value: "special",  label: "Special",  color: "#8b3aa8" },
+const RARITIES: { value: Rarity; label: string; glow: string }[] = [
+  { value: "common",   label: "Common",   glow: "#5a4a3a" },
+  { value: "uncommon", label: "Uncommon", glow: "#9ec3d8" },
+  { value: "rare",     label: "Rare",     glow: "#d9b266" },
+  { value: "mythic",   label: "Mythic",   glow: "#ff7a3a" },
+  { value: "special",  label: "Special",  glow: "#b388e0" },
 ];
 
 export function RarityInput({ value, onChange }: Props): JSX.Element {
   return (
     <div className="flex flex-wrap gap-1">
-      {RARITIES.map((r) => (
-        <button
-          key={r.value}
-          type="button"
-          onClick={() => onChange(r.value)}
-          className={`flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs ${
-            value === r.value ? "border-ink-700 bg-ink-100" : "border-ink-300 bg-white hover:bg-ink-50"
-          }`}
-        >
-          <span className="inline-block h-3 w-3 rounded-sm" style={{ background: r.color, border: "1px solid #00000022" }} />
-          {r.label}
-        </button>
-      ))}
+      {RARITIES.map((r) => {
+        const isActive = value === r.value;
+        return (
+          <button
+            key={r.value}
+            type="button"
+            onClick={() => onChange(r.value)}
+            className="flex items-center gap-2 rounded px-2 py-1 font-mono text-[10px] uppercase tracking-widest"
+            style={{
+              background: isActive ? "linear-gradient(180deg, #2a1d0c, #1a1208)" : "linear-gradient(180deg, #1a1208, #110b05)",
+              border: "1px solid #2a1c0c",
+              color: "#d9b266",
+              boxShadow: isActive ? "0 0 0 1px rgba(217,178,102,0.4), 0 0 12px rgba(217,178,102,0.18)" : "none",
+            }}
+          >
+            <span
+              style={{
+                display: "inline-block",
+                width: 12,
+                height: 12,
+                borderRadius: 999,
+                background: r.glow,
+                boxShadow: `inset 0 0 0 1px rgba(0,0,0,0.5), 0 0 6px ${r.glow}`,
+              }}
+            />
+            {r.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

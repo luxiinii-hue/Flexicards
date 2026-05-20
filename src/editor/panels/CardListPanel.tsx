@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useStore, useActiveCollection, useCardsInActiveCollection } from "@/state/store";
-import { LAYOUT_LABELS } from "@/types/card";
+import { LAYOUT_LABELS, type Card } from "@/types/card";
+import { resolveFrameColor } from "@/cards/frameColor";
+import { FRAME_COLOR_STOPS } from "@/cards/tokens";
+import { CornerRivets, Nameplate, Chip } from "../workshop/Gear";
 
 interface Props {
   onOpenLayoutPicker: () => void;
@@ -25,27 +28,31 @@ export function CardListPanel({ onOpenLayoutPicker, onOpenScryfall }: Props): JS
   const [renameVal, setRenameVal] = useState("");
 
   return (
-    <aside className="flex w-64 flex-shrink-0 flex-col border-r border-ink-200 bg-ink-100">
-      {/* Collection selector */}
-      <div className="border-b border-ink-200 p-3">
-        <label className="block text-[10px] font-bold uppercase tracking-wider text-ink-500">Collection</label>
-        <div className="mt-1 flex gap-1">
+    <aside className="ws-panel relative flex w-72 flex-shrink-0 flex-col">
+      <CornerRivets />
+
+      <div className="px-4 pb-3 pt-4">
+        <Nameplate right={activeCollection ? <Chip glow="#d9b266">SET · {activeCollection.setCode}</Chip> : null}>
+          Specimen Cabinet
+        </Nameplate>
+
+        <div className="mt-3 flex gap-2">
           <select
             value={activeCollection?.id ?? ""}
             onChange={(e) => setActiveCollection(e.target.value)}
-            className="min-w-0 flex-1 rounded-md border border-ink-300 bg-white px-2 py-1.5 text-sm"
+            className="ws-input min-w-0 flex-1 font-fell"
           >
             {collections.map((c) => (
-              <option key={c.id} value={c.id}>
+              <option key={c.id} value={c.id} style={{ background: "#1a1208" }}>
                 {c.name}
               </option>
             ))}
           </select>
           <button
             type="button"
-            className="rounded-md border border-ink-300 bg-white px-2 text-sm hover:bg-ink-50"
+            className="ws-btn ws-btn-primary px-2"
             onClick={async () => {
-              const name = window.prompt("New collection name?")?.trim();
+              const name = window.prompt("New cabinet name?")?.trim();
               if (name) await createCollection(name);
             }}
             title="New collection"
@@ -55,7 +62,7 @@ export function CardListPanel({ onOpenLayoutPicker, onOpenScryfall }: Props): JS
         </div>
 
         {activeCollection ? (
-          <div className="mt-2 flex items-center gap-2 text-xs text-ink-600">
+          <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[9.5px] uppercase tracking-widest text-ink-200">
             {renaming ? (
               <input
                 autoFocus
@@ -73,12 +80,12 @@ export function CardListPanel({ onOpenLayoutPicker, onOpenScryfall }: Props): JS
                     setRenaming(false);
                   }
                 }}
-                className="min-w-0 flex-1 rounded border border-ink-300 px-1 py-0.5 text-xs"
+                className="ws-input flex-1 py-0.5 text-xs"
               />
             ) : (
               <button
                 type="button"
-                className="flex-1 truncate text-left hover:underline"
+                className="hover:text-brass-200"
                 onClick={() => {
                   setRenameVal(activeCollection.name);
                   setRenaming(true);
@@ -87,96 +94,109 @@ export function CardListPanel({ onOpenLayoutPicker, onOpenScryfall }: Props): JS
                 Rename
               </button>
             )}
-            <span className="text-ink-400">·</span>
+            <span className="text-brass-700">·</span>
             <label className="flex items-center gap-1">
-              <span>Set:</span>
+              <span>Set</span>
               <input
                 value={activeCollection.setCode}
                 onChange={(e) => void setCollectionSetCode(activeCollection.id, e.target.value.toUpperCase().slice(0, 4))}
-                className="w-12 rounded border border-ink-300 px-1 py-0.5 text-center text-xs"
+                className="ws-input w-12 px-1 py-0.5 text-center text-[10px]"
               />
             </label>
-            <span className="text-ink-400">·</span>
+            <span className="text-brass-700">·</span>
             <button
               type="button"
-              className="text-red-700 hover:underline"
+              className="text-ember-500 hover:text-ember-400"
               onClick={async () => {
                 if (collections.length <= 1) {
-                  alert("Cannot delete the only collection.");
+                  alert("Cannot decant the only cabinet.");
                   return;
                 }
-                if (window.confirm(`Delete "${activeCollection.name}" and all its cards? This cannot be undone.`)) {
+                if (window.confirm(`Decant "${activeCollection.name}" and all its specimens?`)) {
                   await deleteCollection(activeCollection.id);
                 }
               }}
             >
-              Delete
+              Decant
             </button>
           </div>
         ) : null}
       </div>
 
-      {/* Card list */}
-      <div className="flex-1 overflow-y-auto p-2">
+      <div className="ws-rivet-divider">
+        <span className="font-mono text-[9px] uppercase tracking-widest text-ink-200">
+          Specimens · {cards.length}
+        </span>
+        <span className="flex gap-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <span key={i} className="ws-rivet" />
+          ))}
+        </span>
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-y-auto p-2">
         {cards.length === 0 ? (
-          <div className="rounded-md border border-dashed border-ink-300 p-4 text-center text-xs text-ink-500">
-            No cards yet. Click <strong>+ Card</strong> below or import from Scryfall.
+          <div
+            className="m-2 rounded p-4 text-center font-fell text-xs text-ink-200"
+            style={{ border: "1px dashed #3a2811", background: "rgba(217,178,102,0.04)" }}
+          >
+            No specimens yet. Forge one below or import from Scryfall.
           </div>
         ) : (
           <ul className="space-y-1">
             {cards.map((c) => {
               const isActive = c.id === activeCardId;
               const queued = printQueue[c.id] ?? 0;
+              const swatch = swatchFor(c);
               return (
                 <li key={c.id}>
                   <div
-                    className={`group flex items-center gap-2 rounded-md px-2 py-1.5 ${
-                      isActive ? "bg-ink-900 text-ink-50" : "hover:bg-white"
-                    }`}
+                    className={`ws-specimen group ${isActive ? "is-active" : ""}`}
+                    onClick={() => setActiveCard(c.id)}
                   >
-                    <button
-                      type="button"
-                      onClick={() => setActiveCard(c.id)}
-                      className="min-w-0 flex-1 text-left"
-                    >
-                      <div className={`truncate text-sm font-medium ${isActive ? "text-ink-50" : "text-ink-900"}`}>
+                    <div className="ws-specimen-swatch" style={{ background: swatch, color: swatch }} />
+                    <div className="min-w-0 flex-1">
+                      <div
+                        className="truncate font-title font-semibold"
+                        style={{ fontSize: 13, color: "#f0e0bf", letterSpacing: "0.03em" }}
+                      >
                         {c.name || "Untitled"}
                       </div>
-                      <div className={`truncate text-[10px] uppercase tracking-wide ${isActive ? "text-ink-300" : "text-ink-500"}`}>
+                      <div className="truncate font-mono text-[9px] uppercase tracking-widest text-ink-200" style={{ marginTop: 2 }}>
                         {LAYOUT_LABELS[c.layout]}
                       </div>
-                    </button>
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
-                      <button
-                        type="button"
-                        title="Add to print queue"
-                        className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${
-                          queued > 0
-                            ? "bg-mtg-red text-ink-900"
-                            : isActive
-                            ? "bg-ink-700 text-ink-50"
-                            : "bg-ink-200 text-ink-700"
-                        }`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setPrintQueueCount(c.id, (queued || 0) + 1);
-                        }}
-                      >
-                        +{queued > 0 ? `${queued}` : "P"}
-                      </button>
-                      <button
-                        type="button"
-                        title="Delete card"
-                        className={`rounded px-1 py-0.5 text-[10px] ${
-                          isActive ? "text-ink-300 hover:text-red-300" : "text-ink-400 hover:text-red-700"
-                        }`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (window.confirm(`Delete "${c.name || "Untitled"}"?`)) void deleteCard(c.id);
-                        }}
-                      >
-                        ×
-                      </button>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-mono text-[9.5px] tracking-wider text-brass-300">{c.manaCost || "—"}</div>
+                      <div className="mt-1 flex items-center justify-end gap-1 opacity-0 transition group-hover:opacity-100">
+                        <button
+                          type="button"
+                          title="Add to press queue"
+                          className="rounded px-1.5 py-0.5 font-mono text-[9px] tracking-widest"
+                          style={{
+                            background: queued > 0 ? "#ff7a3a" : "#1a1208",
+                            color: queued > 0 ? "#1a1208" : "#d9b266",
+                            border: "1px solid #2a1c0c",
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPrintQueueCount(c.id, (queued || 0) + 1);
+                          }}
+                        >
+                          {queued > 0 ? `×${queued}` : "+P"}
+                        </button>
+                        <button
+                          type="button"
+                          title="Delete specimen"
+                          className="rounded px-1.5 py-0.5 font-mono text-[10px] text-ember-500 hover:text-ember-400"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (window.confirm(`Delete "${c.name || "Untitled"}"?`)) void deleteCard(c.id);
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </li>
@@ -186,23 +206,19 @@ export function CardListPanel({ onOpenLayoutPicker, onOpenScryfall }: Props): JS
         )}
       </div>
 
-      {/* Bottom actions */}
-      <div className="border-t border-ink-200 p-2 space-y-1">
-        <button
-          type="button"
-          onClick={onOpenLayoutPicker}
-          className="w-full rounded-md bg-ink-900 px-3 py-2 text-xs font-semibold text-ink-50 hover:bg-ink-700"
-        >
-          + New Card
+      <div className="border-t border-brass-700 bg-walnut-dim p-3" style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <button type="button" onClick={onOpenLayoutPicker} className="ws-btn ws-btn-primary">
+          + Forge New Card
         </button>
-        <button
-          type="button"
-          onClick={onOpenScryfall}
-          className="w-full rounded-md border border-ink-300 bg-white px-3 py-2 text-xs font-semibold text-ink-700 hover:bg-ink-50"
-        >
-          Import from Scryfall
+        <button type="button" onClick={onOpenScryfall} className="ws-btn ws-btn-secondary">
+          Scryfall Intake
         </button>
       </div>
     </aside>
   );
+}
+
+function swatchFor(card: Card): string {
+  const color = resolveFrameColor(card);
+  return FRAME_COLOR_STOPS[color].mid;
 }

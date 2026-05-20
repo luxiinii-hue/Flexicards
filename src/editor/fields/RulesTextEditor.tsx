@@ -9,10 +9,6 @@ interface Props {
 
 const QUICK_SYMBOLS = ["T", "Q", "W", "U", "B", "R", "G", "C", "X", "E", "S"];
 
-/**
- * Rules text editor — a textarea with a symbol-insert toolbar that inserts
- * tokens at the current cursor position.
- */
 export function RulesTextEditor({ value, onChange, rows = 5, placeholder }: Props): JSX.Element {
   const ref = useRef<HTMLTextAreaElement | null>(null);
 
@@ -36,31 +32,40 @@ export function RulesTextEditor({ value, onChange, rows = 5, placeholder }: Prop
   }
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-1.5">
       <textarea
         ref={ref}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={rows}
-        placeholder={placeholder ?? "Rules text. Use {T}, {W}, {U}… inline."}
-        className="w-full rounded-md border border-ink-300 bg-white px-2 py-1.5 font-body text-sm focus:border-ink-500 focus:outline-none"
+        placeholder={placeholder ?? "Inscribe the rules. Use {T}, {W}, {U}… inline."}
+        className="ws-input font-fell"
       />
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-wrap items-center gap-1">
+        <span className="font-mono text-[9px] uppercase tracking-widest text-ink-200 mr-1">Glyphs</span>
         {QUICK_SYMBOLS.map((s) => (
           <button
             type="button"
             key={s}
             onClick={() => insertAtCursor(`{${s}}`)}
-            className="rounded-md border border-ink-300 bg-white px-2 py-0.5 text-[10px] font-mono hover:bg-ink-100"
+            className="flex items-center justify-center hover:brightness-110"
+            style={{
+              background: "linear-gradient(180deg, #1a1208, #0e0a05)",
+              border: "1px solid #2a1c0c",
+              width: 26,
+              height: 26,
+              borderRadius: 2,
+            }}
             title={`Insert {${s}}`}
           >
-            {`{${s}}`}
+            <i className={`ms ms-${s.toLowerCase()}`} style={{ fontSize: 14, color: "#d9b266" }} aria-hidden />
           </button>
         ))}
         <button
           type="button"
           onClick={() => insertAtCursor("\n")}
-          className="rounded-md border border-ink-300 bg-white px-2 py-0.5 text-[10px] hover:bg-ink-100"
+          className="ws-btn ws-btn-secondary px-2 py-0 text-[10px]"
+          style={{ height: 26 }}
           title="New paragraph"
         >
           ¶
@@ -68,7 +73,8 @@ export function RulesTextEditor({ value, onChange, rows = 5, placeholder }: Prop
         <button
           type="button"
           onClick={() => insertAtCursor("—")}
-          className="rounded-md border border-ink-300 bg-white px-2 py-0.5 text-[10px] hover:bg-ink-100"
+          className="ws-btn ws-btn-secondary px-2 py-0 text-[10px]"
+          style={{ height: 26 }}
           title="Em-dash"
         >
           —

@@ -9,14 +9,18 @@ import { PrintQueueDrawer } from "./print/PrintQueueDrawer";
 import { SettingsDialog } from "./dialogs/SettingsDialog";
 import { useKeyboardShortcuts } from "./useKeyboardShortcuts";
 import { Toaster } from "./Toaster";
+import { Chip, CornerRivets, Gear } from "./workshop/Gear";
+import { Onboarding } from "./onboarding/Onboarding";
 
 export function Editor(): JSX.Element {
   const init = useStore((s) => s.init);
   const initialized = useStore((s) => s.initialized);
+  const cardCount = useStore((s) => s.cards.length);
   const [layoutPickerOpen, setLayoutPickerOpen] = useState(false);
   const [scryfallOpen, setScryfallOpen] = useState(false);
   const [printQueueOpen, setPrintQueueOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [onboardingDismissed, setOnboardingDismissed] = useState(false);
 
   useEffect(() => {
     void init();
@@ -29,21 +33,38 @@ export function Editor(): JSX.Element {
 
   if (!initialized) {
     return (
-      <div className="flex h-screen items-center justify-center text-ink-500">
-        <div className="text-lg">Loading Flexicards…</div>
+      <div className="flex h-screen items-center justify-center font-fell text-ink-100">
+        <div className="text-lg tracking-widest">Stoking the forge…</div>
+      </div>
+    );
+  }
+
+  /**
+   * First-launch onboarding: shown only when there are no cards yet and the
+   * user hasn't dismissed it this session. After it completes (skip or
+   * forge), regular editor takes over.
+   */
+  const showOnboarding = cardCount === 0 && !onboardingDismissed;
+  if (showOnboarding) {
+    return (
+      <div className="flex h-screen min-h-0 flex-col">
+        <OnboardingHeader onOpenSettings={() => setSettingsOpen(true)} />
+        <Onboarding onComplete={() => setOnboardingDismissed(true)} />
+        {settingsOpen ? <SettingsDialog onClose={() => setSettingsOpen(false)} /> : null}
+        <Toaster />
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen min-h-0 flex-col bg-ink-50">
+    <div className="flex h-screen min-h-0 flex-col">
       <Header
         onOpenLayoutPicker={() => setLayoutPickerOpen(true)}
         onOpenScryfall={() => setScryfallOpen(true)}
         onOpenPrintQueue={() => setPrintQueueOpen(true)}
         onOpenSettings={() => setSettingsOpen(true)}
       />
-      <main className="flex min-h-0 flex-1 flex-row">
+      <main className="flex min-h-0 flex-1 flex-row gap-px bg-ink-900">
         <CardListPanel
           onOpenLayoutPicker={() => setLayoutPickerOpen(true)}
           onOpenScryfall={() => setScryfallOpen(true)}
@@ -51,6 +72,7 @@ export function Editor(): JSX.Element {
         <PreviewPanel />
         <FormPanel />
       </main>
+      <StatusBar />
       {layoutPickerOpen ? <LayoutPicker onClose={() => setLayoutPickerOpen(false)} /> : null}
       {scryfallOpen ? <ScryfallDialog onClose={() => setScryfallOpen(false)} /> : null}
       {printQueueOpen ? <PrintQueueDrawer onClose={() => setPrintQueueOpen(false)} /> : null}
@@ -70,50 +92,55 @@ interface HeaderProps {
 function Header({ onOpenLayoutPicker, onOpenScryfall, onOpenPrintQueue, onOpenSettings }: HeaderProps): JSX.Element {
   const printQueueSize = useStore((s) => Object.values(s.printQueue).reduce((a, b) => a + b, 0));
   return (
-    <header className="flex h-12 flex-shrink-0 items-center justify-between border-b border-ink-200 bg-ink-100/70 px-4 backdrop-blur">
+    <header className="ws-brass relative flex h-14 flex-shrink-0 items-center gap-4 px-5">
+      <CornerRivets />
+
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 text-ink-900">
-          <Logo />
-          <span className="font-title text-lg font-semibold tracking-wide">Flexicards</span>
+        <Gear size={32} color="#3a2811" opacity={0.9} spin={8} />
+        <div className="leading-tight">
+          <div className="font-title ws-engraved" style={{ fontSize: 18, letterSpacing: "0.3em" }}>
+            FLEXICARDS
+          </div>
+          <div className="font-fellEng italic ws-etched" style={{ fontSize: 11, letterSpacing: "0.04em", marginTop: 2 }}>
+            Cartographers&apos; Workshop &amp; Reagent Press
+          </div>
         </div>
-        <span className="text-xs text-ink-500">Custom MTG card generator</span>
       </div>
+
+      <div className="h-7 w-px bg-brass-700" />
+      <span className="font-mono ws-etched hidden md:inline" style={{ fontSize: 10, letterSpacing: "0.18em" }}>
+        ESTAB. MMXXVI · CABINET 07
+      </span>
+
+      <div className="flex-1" />
+
       <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={onOpenLayoutPicker}
-          className="rounded-md bg-ink-900 px-3 py-1.5 text-xs font-semibold text-ink-50 hover:bg-ink-700"
-          title="New card (Ctrl+N)"
-        >
-          + Card
+        <button type="button" onClick={onOpenLayoutPicker} className="ws-btn ws-btn-secondary" title="New card (Ctrl+N)">
+          <span style={{ width: 8, height: 8, borderRadius: 1, background: "#ff7a3a", boxShadow: "0 0 8px #ff7a3a", display: "inline-block" }} />
+          Forge Card
         </button>
-        <button
-          type="button"
-          onClick={onOpenScryfall}
-          className="rounded-md border border-ink-300 bg-white px-3 py-1.5 text-xs font-semibold text-ink-700 hover:bg-ink-100"
-        >
-          Import from Scryfall
+        <button type="button" onClick={onOpenScryfall} className="ws-btn ws-btn-secondary">
+          Scryfall Intake
         </button>
-        <button
-          type="button"
-          onClick={onOpenPrintQueue}
-          className="relative rounded-md border border-ink-300 bg-white px-3 py-1.5 text-xs font-semibold text-ink-700 hover:bg-ink-100"
-          title="Print queue (Ctrl+P)"
-        >
-          Print Queue
+        <button type="button" onClick={onOpenPrintQueue} className="ws-btn ws-btn-secondary relative" title="Print queue (Ctrl+P)">
+          Press Queue
           {printQueueSize > 0 ? (
-            <span className="absolute -right-1 -top-1 rounded-full bg-mtg-red px-1.5 py-0.5 text-[10px] font-bold text-ink-900">
+            <span
+              className="absolute -right-1.5 -top-1.5 rounded-full px-1.5 py-0.5"
+              style={{
+                background: "#ff7a3a",
+                color: "#1a1208",
+                border: "1px solid #2a1c0c",
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 9,
+                fontWeight: 800,
+              }}
+            >
               {printQueueSize}
             </span>
           ) : null}
         </button>
-        <button
-          type="button"
-          onClick={onOpenSettings}
-          className="rounded-md border border-ink-300 bg-white px-2 py-1.5 text-xs font-semibold text-ink-700 hover:bg-ink-100"
-          aria-label="Settings"
-          title="Settings"
-        >
+        <button type="button" onClick={onOpenSettings} className="ws-btn ws-btn-secondary" aria-label="Settings" title="Settings">
           ⚙
         </button>
       </div>
@@ -121,14 +148,49 @@ function Header({ onOpenLayoutPicker, onOpenScryfall, onOpenPrintQueue, onOpenSe
   );
 }
 
-function Logo(): JSX.Element {
+/**
+ * Compact header used during onboarding — just the branding, no action
+ * buttons that would only confuse a first-launch user.
+ */
+function OnboardingHeader({ onOpenSettings }: { onOpenSettings: () => void }): JSX.Element {
   return (
-    <svg width="22" height="22" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-      <rect x="3" y="2" width="26" height="28" rx="3" fill="#16140f" />
-      <rect x="5" y="4" width="22" height="24" rx="2" fill="#e3c87a" />
-      <rect x="7" y="6" width="18" height="10" rx="1" fill="#1a2638" />
-      <rect x="7" y="18" width="18" height="8" rx="1" fill="#f3f1ea" />
-      <circle cx="22" cy="11" r="1.8" fill="#aae0fa" stroke="#16140f" strokeWidth="0.4" />
-    </svg>
+    <header className="ws-brass relative flex h-14 flex-shrink-0 items-center gap-4 px-5">
+      <CornerRivets />
+      <div className="flex items-center gap-3">
+        <Gear size={32} color="#3a2811" opacity={0.9} spin={8} />
+        <div className="leading-tight">
+          <div className="font-title ws-engraved" style={{ fontSize: 18, letterSpacing: "0.3em" }}>
+            FLEXICARDS
+          </div>
+          <div className="font-fellEng italic ws-etched" style={{ fontSize: 11, letterSpacing: "0.04em", marginTop: 2 }}>
+            Cartographers&apos; Workshop &amp; Reagent Press
+          </div>
+        </div>
+      </div>
+      <div className="flex-1" />
+      <button type="button" onClick={onOpenSettings} className="ws-btn ws-btn-secondary" title="Settings">
+        ⚙
+      </button>
+    </header>
+  );
+}
+
+function StatusBar(): JSX.Element {
+  const cardCount = useStore((s) => s.cards.length);
+  const collectionCount = useStore((s) => s.collections.length);
+  return (
+    <footer
+      className="flex flex-shrink-0 items-center gap-4 border-t border-brass-700 bg-walnut-dim px-4 py-1"
+      style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: "0.18em", color: "#7a6a4d", textTransform: "uppercase" }}
+    >
+      <span style={{ color: "#5cae9b" }}>● Workshop online</span>
+      <span style={{ color: "#3a2811" }}>·</span>
+      <span>{cardCount} specimen{cardCount === 1 ? "" : "s"}</span>
+      <span style={{ color: "#3a2811" }}>·</span>
+      <span>{collectionCount} cabinet{collectionCount === 1 ? "" : "s"}</span>
+      <div className="flex-1" />
+      <Chip glow="#d9b266">Auto-Save · IndexedDB</Chip>
+      <span style={{ color: "#ff7a3a" }}>v 0.2 · cog #4a2f12</span>
+    </footer>
   );
 }
