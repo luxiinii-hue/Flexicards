@@ -57,20 +57,47 @@ export const useStore = create<StoreState>((set, get) => ({
 
   init: async () => {
     if (get().initialized) return;
-    const { defaultCollectionId } = await ensureDefaults();
-    const [collections, cards, settings] = await Promise.all([
-      db.collections.orderBy("createdAt").toArray(),
-      db.cards.orderBy("updatedAt").reverse().toArray(),
-      db.settings.get("global"),
-    ]);
-    set({
-      collections,
-      cards,
-      settings: settings ?? DEFAULT_SETTINGS,
-      activeCollectionId: defaultCollectionId,
-      activeCardId: null,
-      initialized: true,
-    });
+    try {
+      const { defaultCollectionId } = await ensureDefaults();
+      const [collections, cards, settings] = await Promise.all([
+        db.collections.orderBy("createdAt").toArray(),
+        db.cards.orderBy("updatedAt").reverse().toArray(),
+        db.settings.get("global"),
+      ]);
+      set({
+        collections,
+        cards,
+        settings: settings ?? DEFAULT_SETTINGS,
+        activeCollectionId: defaultCollectionId,
+        activeCardId: null,
+        initialized: true,
+      });
+    } catch (err) {
+      console.error("Flexicards: failed to open IndexedDB", err);
+      // Attempt one-shot recovery: delete the database and retry. Only useful
+      // when the schema upgrade fails on a stale dev-time DB.
+      try {
+        await db.delete();
+        await db.open();
+        const { defaultCollectionId } = await ensureDefaults();
+        const [collections, cards, settings] = await Promise.all([
+          db.collections.orderBy("createdAt").toArray(),
+          db.cards.orderBy("updatedAt").reverse().toArray(),
+          db.settings.get("global"),
+        ]);
+        set({
+          collections,
+          cards,
+          settings: settings ?? DEFAULT_SETTINGS,
+          activeCollectionId: defaultCollectionId,
+          activeCardId: null,
+          initialized: true,
+        });
+      } catch (err2) {
+        console.error("Flexicards: DB recovery also failed", err2);
+        throw err2;
+      }
+    }
   },
 
   setActiveCollection: (id) => set({ activeCollectionId: id, activeCardId: null }),

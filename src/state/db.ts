@@ -37,12 +37,21 @@ class FlexicardsDB extends Dexie {
       scryfallCache: "url, fetchedAt, expiresAt",
       settings: "id",
     });
+
+    // v2: add createdAt to the collections index so we can order by creation date
+    this.version(2).stores({
+      cards: "id, collectionId, layout, name, createdAt, updatedAt",
+      collections: "id, name, createdAt, updatedAt",
+      blobs: "id, createdAt",
+      scryfallCache: "url, fetchedAt, expiresAt",
+      settings: "id",
+    });
   }
 }
 
 export const db = new FlexicardsDB();
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 /** Ensure default settings + a default collection exist. Called once on app start. */
 export async function ensureDefaults(): Promise<{ defaultCollectionId: string }> {
