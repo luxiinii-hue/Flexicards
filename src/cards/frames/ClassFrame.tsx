@@ -10,6 +10,7 @@ import { TitleBar } from "../parts/TitleBar";
 import { ArtBox } from "../parts/ArtBox";
 import { TypeLine } from "../parts/TypeLine";
 import { CollectorLine } from "../parts/CollectorLine";
+import { Holostamp } from "../parts/Holostamp";
 import { ManaCostStrip } from "../symbols/ManaSymbol";
 import { TEXT_BOX_BG, TEXT_H, TEXT_W, TEXT_X, TEXT_Y } from "../tokens";
 import { resolveFrameColor } from "../frameColor";
@@ -76,6 +77,7 @@ export function ClassFrame({ card }: Props): JSX.Element {
         );
       })}
 
+      <Holostamp rarity={card.rarity} />
       <CollectorLine
         artist={card.artist}
         setCode={card.setCode}

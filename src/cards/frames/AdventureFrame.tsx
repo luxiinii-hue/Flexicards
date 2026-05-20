@@ -11,6 +11,7 @@ import { ArtBox } from "../parts/ArtBox";
 import { TypeLine } from "../parts/TypeLine";
 import { PowerToughness } from "../parts/PowerToughness";
 import { CollectorLine } from "../parts/CollectorLine";
+import { Holostamp } from "../parts/Holostamp";
 import { resolveFrameColor } from "../frameColor";
 import { useArtHref } from "../useArtHref";
 import { ManaCostStrip } from "../symbols/ManaSymbol";
@@ -124,6 +125,7 @@ export function AdventureFrame({ card }: Props): JSX.Element {
         </foreignObject>
       ) : null}
 
+      <Holostamp rarity={card.rarity} />
       <CollectorLine
         artist={card.artist}
         setCode={card.setCode}

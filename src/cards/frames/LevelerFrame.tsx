@@ -12,6 +12,7 @@ import { TypeLine } from "../parts/TypeLine";
 import { TextBox } from "../parts/TextBox";
 import { PowerToughness } from "../parts/PowerToughness";
 import { CollectorLine } from "../parts/CollectorLine";
+import { Holostamp } from "../parts/Holostamp";
 import { TEXT_H, TEXT_W, TEXT_X, TEXT_Y } from "../tokens";
 import { resolveFrameColor } from "../frameColor";
 import { useArtHref } from "../useArtHref";
@@ -36,6 +37,7 @@ export function LevelerFrame({ card }: Props): JSX.Element {
       <ArtBox imageHref={artHref} color={color} clipId={`art-${card.id}`} />
       <TypeLine text={card.typeLine} color={color} rarity={card.rarity} />
       <TextBox rulesText={card.rulesText} flavorText={card.flavorText} rightInset={bracketW + 24} />
+      <Holostamp rarity={card.rarity} />
       <CollectorLine artist={card.artist} setCode={card.setCode} collectorNumber={card.collectorNumber} color={color} />
       <PowerToughness power={card.basePower} toughness={card.baseToughness} color={color} />
 

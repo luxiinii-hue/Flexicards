@@ -13,6 +13,7 @@ import { TextBox } from "../parts/TextBox";
 import { PowerToughness } from "../parts/PowerToughness";
 import { LoyaltyBadge } from "../parts/LoyaltyBadge";
 import { CollectorLine } from "../parts/CollectorLine";
+import { Holostamp } from "../parts/Holostamp";
 import { resolveFrameColor } from "../frameColor";
 import { useArtHref } from "../useArtHref";
 import { TEXT_BOX_BG, TEXT_H, TEXT_W, TEXT_X, TEXT_Y } from "../tokens";
@@ -45,6 +46,7 @@ export function CustomFrame({ card }: Props): JSX.Element {
         <TextBox rulesText={card.rulesText} flavorText={card.flavorText} rightInset={rightInset} />
       )}
 
+      <Holostamp rarity={card.rarity} />
       <CollectorLine
         artist={card.artist}
         setCode={card.setCode}

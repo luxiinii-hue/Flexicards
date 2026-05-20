@@ -20,3 +20,4 @@ dist-ssr
 # Build artifacts
 *.tsbuildinfo
 .tmp
+example/

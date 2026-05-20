@@ -62,30 +62,57 @@ export const COLLECTOR_Y = TEXT_Y + TEXT_H + 8;
 export const COLLECTOR_W = TEXT_W;
 export const COLLECTOR_H = 30;
 
-/** Frame color gradients. [top, bottom] for the inner color band. */
-export const FRAME_COLOR_STOPS: Record<FrameColor, { top: string; bottom: string; ink: string }> = {
-  white:      { top: "#fbf6cf", bottom: "#e6d68a", ink: "#3a3220" },
-  blue:       { top: "#a9d6f0", bottom: "#3f7fb0", ink: "#0f2a44" },
-  black:      { top: "#4b4540", bottom: "#161210", ink: "#f3eee5" },
-  red:        { top: "#f4a380", bottom: "#c4502a", ink: "#3a120a" },
-  green:      { top: "#b5d6a8", bottom: "#577a4d", ink: "#1a2c12" },
-  multicolor: { top: "#efd682", bottom: "#b8923a", ink: "#3a2812" },
-  colorless:  { top: "#d5d4d0", bottom: "#8e8d89", ink: "#1c1a18" },
-  land:       { top: "#cdb393", bottom: "#876043", ink: "#22150c" },
+/**
+ * Frame color stops. Each color resolves to:
+ *  - top:    inner band top color (the bright/saturated side)
+ *  - mid:    midpoint, used to add gradient richness
+ *  - bottom: inner band bottom color (the deep/saturated side)
+ *  - ink:    text color used on this frame
+ */
+export const FRAME_COLOR_STOPS: Record<FrameColor, { top: string; mid: string; bottom: string; ink: string }> = {
+  white:      { top: "#fdf7c8", mid: "#ecd87f", bottom: "#c5a64a", ink: "#26200f" },
+  blue:       { top: "#a7d9f2", mid: "#4d8fc1", bottom: "#1f5587", ink: "#06223a" },
+  black:      { top: "#544b44", mid: "#221d1a", bottom: "#0a0807", ink: "#f1e6d2" },
+  red:        { top: "#f1a481", mid: "#c45826", bottom: "#742a0e", ink: "#290a04" },
+  green:      { top: "#b7d6a8", mid: "#5d8a51", bottom: "#21401a", ink: "#0b1a08" },
+  multicolor: { top: "#f1da80", mid: "#c69d2b", bottom: "#6e4d10", ink: "#28190a" },
+  colorless:  { top: "#dadbd8", mid: "#9a9b97", bottom: "#535453", ink: "#0d0d0c" },
+  land:       { top: "#cfb491", mid: "#876043", bottom: "#3f2914", ink: "#1a0e05" },
 };
 
 /** Slightly darker stops used on the rim around the art window and text box. */
 export const FRAME_RIM_STOPS: Record<FrameColor, { top: string; bottom: string }> = {
-  white:      { top: "#d8c87a", bottom: "#a8954b" },
-  blue:       { top: "#1f4a6b", bottom: "#0e2d49" },
-  black:      { top: "#1c1815", bottom: "#0a0807" },
-  red:        { top: "#823016", bottom: "#4e1d0e" },
-  green:      { top: "#3d5832", bottom: "#1f2f19" },
-  multicolor: { top: "#8e6e22", bottom: "#523f12" },
-  colorless:  { top: "#67676a", bottom: "#363639" },
-  land:       { top: "#604229", bottom: "#352213" },
+  white:      { top: "#9c7d2a", bottom: "#594314" },
+  blue:       { top: "#143b5b", bottom: "#06223a" },
+  black:      { top: "#1a1612", bottom: "#040302" },
+  red:        { top: "#5a1f0c", bottom: "#291006" },
+  green:      { top: "#2a4322", bottom: "#0e1d07" },
+  multicolor: { top: "#5d4310", bottom: "#28190a" },
+  colorless:  { top: "#3b3c3a", bottom: "#181918" },
+  land:       { top: "#3f2914", bottom: "#1c0e06" },
+};
+
+/** Slightly brighter highlight used on the inner bevel rim above the art/text. */
+export const FRAME_HIGHLIGHT_STOPS: Record<FrameColor, string> = {
+  white:      "rgba(255,250,220,0.55)",
+  blue:       "rgba(200,225,245,0.4)",
+  black:      "rgba(150,140,130,0.32)",
+  red:        "rgba(255,200,170,0.45)",
+  green:      "rgba(220,235,200,0.4)",
+  multicolor: "rgba(255,240,195,0.55)",
+  colorless:  "rgba(230,230,228,0.45)",
+  land:       "rgba(240,220,180,0.4)",
 };
 
 /** Color used for text body (rules + flavor) in the text box. Always near-black. */
 export const TEXT_BOX_BG = "#f6efde";
 export const TEXT_INK = "#0b0a08";
+
+/** Rarity stripe accent color above the type bar on rare+/mythic/special. */
+export const RARITY_STRIPE: Record<string, string | null> = {
+  common:   null,
+  uncommon: "linear-gradient(to right, rgba(200,210,215,0.0), rgba(200,210,215,0.85), rgba(200,210,215,0.0))",
+  rare:     "linear-gradient(to right, rgba(225,201,124,0.0), rgba(225,201,124,0.95), rgba(225,201,124,0.0))",
+  mythic:   "linear-gradient(to right, rgba(201,91,30,0.0), rgba(201,91,30,0.95), rgba(201,91,30,0.0))",
+  special:  "linear-gradient(to right, rgba(139,58,168,0.0), rgba(139,58,168,0.95), rgba(139,58,168,0.0))",
+};

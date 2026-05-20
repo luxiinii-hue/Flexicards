@@ -10,6 +10,7 @@ import { InnerFrame } from "../parts/InnerFrame";
 import { TitleBar } from "../parts/TitleBar";
 import { TypeLine } from "../parts/TypeLine";
 import { CollectorLine } from "../parts/CollectorLine";
+import { Holostamp } from "../parts/Holostamp";
 import { resolveFrameColor } from "../frameColor";
 import { useArtHref } from "../useArtHref";
 import { ART_H, ART_X, ART_Y, ART_W, BORDER, TYPE_Y } from "../tokens";
@@ -108,6 +109,7 @@ export function SagaFrame({ card }: Props): JSX.Element {
       </g>
 
       <TypeLine text={card.typeLine} color={color} rarity={card.rarity} />
+      <Holostamp rarity={card.rarity} cx={artNewX + artNewW / 2} cy={ART_Y + artNewH - 30} />
       <CollectorLine
         artist={card.artist}
         setCode={card.setCode}

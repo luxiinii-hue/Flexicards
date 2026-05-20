@@ -1,6 +1,6 @@
 /**
- * Planeswalker starting-loyalty shield. Rendered as a dark pentagon-like shield
- * with a bold number.
+ * Starting-loyalty shield for planeswalkers. Stamped dark shield with a
+ * radial-gradient interior, embossed border and stylized large numeral.
  */
 import { LOYALTY_SIZE, LOYALTY_X, LOYALTY_Y } from "../tokens";
 
@@ -21,28 +21,36 @@ export function LoyaltyBadge({
   const cx = x + size / 2;
   const cy = y + size / 2;
   const r = size / 2;
+  const id = `loyalty-${cx}-${cy}`;
+
+  const path = `
+    M ${cx} ${cy - r}
+    L ${cx + r * 0.88} ${cy - r * 0.4}
+    L ${cx + r * 0.55} ${cy + r}
+    L ${cx - r * 0.55} ${cy + r}
+    L ${cx - r * 0.88} ${cy - r * 0.4}
+    Z
+  `;
+
   return (
     <g>
       <defs>
-        <linearGradient id="loyalty-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#2a2017" />
-          <stop offset="100%" stopColor="#0c0907" />
+        <radialGradient id={`${id}-bg`} cx="50%" cy="35%" r="65%">
+          <stop offset="0%" stopColor="#3b2e21" />
+          <stop offset="60%" stopColor="#1c1410" />
+          <stop offset="100%" stopColor="#0a0606" />
+        </radialGradient>
+        <linearGradient id={`${id}-sheen`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="rgba(255,220,160,0.35)" />
+          <stop offset="55%" stopColor="rgba(0,0,0,0)" />
         </linearGradient>
       </defs>
-      {/* Shield silhouette */}
-      <path
-        d={`
-          M ${cx} ${cy - r}
-          L ${cx + r * 0.88} ${cy - r * 0.4}
-          L ${cx + r * 0.55} ${cy + r}
-          L ${cx - r * 0.55} ${cy + r}
-          L ${cx - r * 0.88} ${cy - r * 0.4}
-          Z
-        `}
-        fill="url(#loyalty-gradient)"
-        stroke="#f3eee5"
-        strokeWidth={1.2}
-      />
+
+      {/* Drop shadow */}
+      <path d={path} fill="rgba(0,0,0,0.45)" transform={`translate(2 3)`} />
+      {/* Shield body */}
+      <path d={path} fill={`url(#${id}-bg)`} stroke="#f1e2c0" strokeWidth={1.6} />
+      {/* Inner emboss line */}
       <path
         d={`
           M ${cx} ${cy - r + 4}
@@ -53,17 +61,24 @@ export function LoyaltyBadge({
           Z
         `}
         fill="none"
-        stroke="rgba(255,255,255,0.15)"
+        stroke="rgba(255,220,160,0.32)"
         strokeWidth={1}
       />
+      {/* Sheen on the top half */}
+      <path d={path} fill={`url(#${id}-sheen)`} />
+
+      {/* Loyalty numeral */}
       <text
         x={cx}
-        y={cy + 14}
-        fontFamily="'Source Sans 3', system-ui, sans-serif"
-        fontWeight={700}
-        fontSize={38}
+        y={cy + 16}
+        fontFamily="'Source Sans 3', 'Helvetica Neue', system-ui, sans-serif"
+        fontWeight={800}
+        fontSize={40}
         textAnchor="middle"
         fill="#f5efe1"
+        style={{ paintOrder: "stroke" }}
+        stroke="rgba(0,0,0,0.6)"
+        strokeWidth={0.8}
       >
         {loyalty}
       </text>

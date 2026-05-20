@@ -1,7 +1,7 @@
 /**
  * The M15-style "normal" frame — used by creatures, sorceries, instants,
  * enchantments, artifacts, and lands. Conditionally renders the P/T box for
- * creature layouts.
+ * creature layouts and the holographic stamp for rare+ rarities.
  */
 import type { Card, CreatureCard, NormalCard, FrameColor } from "@/types/card";
 import { CardSvgDefs } from "../parts/SvgDefs";
@@ -13,16 +13,14 @@ import { TypeLine } from "../parts/TypeLine";
 import { TextBox } from "../parts/TextBox";
 import { PowerToughness } from "../parts/PowerToughness";
 import { CollectorLine } from "../parts/CollectorLine";
+import { Holostamp } from "../parts/Holostamp";
 import { resolveFrameColor } from "../frameColor";
 import { useArtHref } from "../useArtHref";
 
 interface NormalFrameProps {
   card: NormalCard | CreatureCard | Card;
-  /** Frame color override (used by DFC backface, custom layouts, etc.) */
   colorOverride?: FrameColor;
-  /** When set, show the P/T box regardless of layout. */
   forcePT?: { power: string; toughness: string };
-  /** Hide the P/T box even if the underlying card has one. */
   hidePT?: boolean;
 }
 
@@ -49,6 +47,7 @@ export function NormalFrame({ card, colorOverride, forcePT, hidePT }: NormalFram
       <ArtBox imageHref={artHref} color={color} clipId={`art-${card.id}`} />
       <TypeLine text={card.typeLine} color={color} rarity={card.rarity} setSymbolId={card.setSymbol?.id} />
       <TextBox rulesText={card.rulesText} flavorText={card.flavorText} rightInset={showPT ? 100 : 0} />
+      <Holostamp rarity={card.rarity} />
       <CollectorLine
         artist={card.artist}
         setCode={card.setCode}

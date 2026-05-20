@@ -11,9 +11,11 @@ import { ArtBox } from "../parts/ArtBox";
 import { TypeLine } from "../parts/TypeLine";
 import { CollectorLine } from "../parts/CollectorLine";
 import { LoyaltyBadge } from "../parts/LoyaltyBadge";
+import { Holostamp } from "../parts/Holostamp";
+import { TEXT_X, TEXT_W, TEXT_Y } from "../tokens";
 import { resolveFrameColor } from "../frameColor";
 import { useArtHref } from "../useArtHref";
-import { TEXT_BOX_BG, TEXT_H, TEXT_W, TEXT_X, TEXT_Y } from "../tokens";
+import { TEXT_BOX_BG, TEXT_H } from "../tokens";
 
 interface Props {
   card: PlaneswalkerCard;
@@ -64,6 +66,8 @@ export function PlaneswalkerFrame({ card }: Props): JSX.Element {
         );
       })}
 
+      {/* Holostamp on planeswalkers — placed left-of-center so it doesn't fight with the loyalty shield. */}
+      <Holostamp rarity={card.rarity} cx={TEXT_X + TEXT_W * 0.32} />
       <CollectorLine
         artist={card.artist}
         setCode={card.setCode}
